@@ -1,0 +1,3553 @@
+openapi: 3.0.3
+info:
+  title: Django DzSkills
+  version: 0.0.0
+paths:
+  /DzSkills/courses/:
+    get:
+      operationId: DzSkills_courses_list
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+          description: ''
+  /DzSkills/courses/{course_pk}/contents/:
+    get:
+      operationId: DzSkills_courses_contents_list
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnEnrolledStudentCourseContent'
+          description: ''
+  /DzSkills/courses/{course_pk}/contents/{id}/:
+    get:
+      operationId: DzSkills_courses_contents_retrieve
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course content.
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnEnrolledStudentCourseContent'
+          description: ''
+  /DzSkills/courses/{course_pk}/create_checkout_session/:
+    get:
+      operationId: DzSkills_courses_create_checkout_session_retrieve
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /DzSkills/courses/{course_pk}/posts/:
+    get:
+      operationId: DzSkills_courses_posts_list
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForumPost'
+          description: ''
+    post:
+      operationId: DzSkills_courses_posts_create
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ForumPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ForumPost'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumPost'
+          description: ''
+  /DzSkills/courses/{course_pk}/posts/{id}/:
+    get:
+      operationId: DzSkills_courses_posts_retrieve
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this forum post.
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumPost'
+          description: ''
+    put:
+      operationId: DzSkills_courses_posts_update
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this forum post.
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ForumPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ForumPost'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumPost'
+          description: ''
+    patch:
+      operationId: DzSkills_courses_posts_partial_update
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this forum post.
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedForumPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedForumPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedForumPost'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumPost'
+          description: ''
+    delete:
+      operationId: DzSkills_courses_posts_destroy
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this forum post.
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /DzSkills/courses/{course_pk}/posts/{post_pk}/comments/:
+    get:
+      operationId: DzSkills_courses_posts_comments_list
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: post_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForumPostComment'
+          description: ''
+    post:
+      operationId: DzSkills_courses_posts_comments_create
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: post_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumPostComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ForumPostComment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ForumPostComment'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumPostComment'
+          description: ''
+  /DzSkills/courses/{course_pk}/posts/{post_pk}/comments/{id}/:
+    get:
+      operationId: DzSkills_courses_posts_comments_retrieve
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this forum post comment.
+        required: true
+      - in: path
+        name: post_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumPostComment'
+          description: ''
+    put:
+      operationId: DzSkills_courses_posts_comments_update
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this forum post comment.
+        required: true
+      - in: path
+        name: post_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumPostComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ForumPostComment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ForumPostComment'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumPostComment'
+          description: ''
+    patch:
+      operationId: DzSkills_courses_posts_comments_partial_update
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this forum post comment.
+        required: true
+      - in: path
+        name: post_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedForumPostComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedForumPostComment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedForumPostComment'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumPostComment'
+          description: ''
+    delete:
+      operationId: DzSkills_courses_posts_comments_destroy
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this forum post comment.
+        required: true
+      - in: path
+        name: post_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /DzSkills/courses/{id}/:
+    get:
+      operationId: DzSkills_courses_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /DzSkills/instructors/:
+    get:
+      operationId: DzSkills_instructors_list
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Instructor'
+          description: ''
+    post:
+      operationId: DzSkills_instructors_create
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstructorSerializerSensitive'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstructorSerializerSensitive'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstructorSerializerSensitive'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstructorSerializerSensitive'
+          description: ''
+  /DzSkills/instructors/{instructor_pk}/courses/:
+    get:
+      operationId: DzSkills_instructors_courses_list
+      parameters:
+      - in: path
+        name: instructor_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+          description: ''
+    post:
+      operationId: DzSkills_instructors_courses_create
+      parameters:
+      - in: path
+        name: instructor_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /DzSkills/instructors/{instructor_pk}/courses/{course_pk}/contents/:
+    get:
+      operationId: DzSkills_instructors_courses_contents_list
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: {}
+                  description: Unspecified response body
+          description: ''
+    post:
+      operationId: DzSkills_instructors_courses_contents_create
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /DzSkills/instructors/{instructor_pk}/courses/{course_pk}/contents/{course_content_pk}/quiz/:
+    get:
+      operationId: DzSkills_instructors_courses_contents_quiz_list
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quiz'
+          description: ''
+    post:
+      operationId: DzSkills_instructors_courses_contents_quiz_create
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+  /DzSkills/instructors/{instructor_pk}/courses/{course_pk}/contents/{course_content_pk}/quiz/{id}/:
+    get:
+      operationId: DzSkills_instructors_courses_contents_quiz_retrieve
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+    put:
+      operationId: DzSkills_instructors_courses_contents_quiz_update
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+    patch:
+      operationId: DzSkills_instructors_courses_contents_quiz_partial_update
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQuiz'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedQuiz'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedQuiz'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+    delete:
+      operationId: DzSkills_instructors_courses_contents_quiz_destroy
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /DzSkills/instructors/{instructor_pk}/courses/{course_pk}/contents/{course_content_pk}/quiz/{quiz_pk}/questions/:
+    get:
+      operationId: DzSkills_instructors_courses_contents_quiz_questions_list
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: quiz_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizQuestion'
+          description: ''
+    post:
+      operationId: DzSkills_instructors_courses_contents_quiz_questions_create
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: quiz_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizQuestion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuizQuestion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuizQuestion'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizQuestion'
+          description: ''
+  /DzSkills/instructors/{instructor_pk}/courses/{course_pk}/contents/{course_content_pk}/quiz/{quiz_pk}/questions/{id}/:
+    get:
+      operationId: DzSkills_instructors_courses_contents_quiz_questions_retrieve
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz question.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: quiz_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizQuestion'
+          description: ''
+    put:
+      operationId: DzSkills_instructors_courses_contents_quiz_questions_update
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz question.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: quiz_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizQuestion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuizQuestion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuizQuestion'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizQuestion'
+          description: ''
+    patch:
+      operationId: DzSkills_instructors_courses_contents_quiz_questions_partial_update
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz question.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: quiz_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQuizQuestion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedQuizQuestion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedQuizQuestion'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizQuestion'
+          description: ''
+    delete:
+      operationId: DzSkills_instructors_courses_contents_quiz_questions_destroy
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz question.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: quiz_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /DzSkills/instructors/{instructor_pk}/courses/{course_pk}/contents/{id}/:
+    get:
+      operationId: DzSkills_instructors_courses_contents_retrieve
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course content.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+    put:
+      operationId: DzSkills_instructors_courses_contents_update
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course content.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+    patch:
+      operationId: DzSkills_instructors_courses_contents_partial_update
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course content.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+    delete:
+      operationId: DzSkills_instructors_courses_contents_destroy
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course content.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /DzSkills/instructors/{instructor_pk}/courses/{id}/:
+    get:
+      operationId: DzSkills_instructors_courses_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    put:
+      operationId: DzSkills_instructors_courses_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    patch:
+      operationId: DzSkills_instructors_courses_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    delete:
+      operationId: DzSkills_instructors_courses_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      - in: path
+        name: instructor_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /DzSkills/instructors/{id}/:
+    get:
+      operationId: DzSkills_instructors_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this instructor.
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+          description: ''
+    put:
+      operationId: DzSkills_instructors_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this instructor.
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstructorSerializerSensitive'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstructorSerializerSensitive'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstructorSerializerSensitive'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstructorSerializerSensitive'
+          description: ''
+    patch:
+      operationId: DzSkills_instructors_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this instructor.
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInstructorSerializerSensitive'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedInstructorSerializerSensitive'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedInstructorSerializerSensitive'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstructorSerializerSensitive'
+          description: ''
+  /DzSkills/instructors/me/:
+    get:
+      operationId: DzSkills_instructors_me_retrieve
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+          description: ''
+    put:
+      operationId: DzSkills_instructors_me_update
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstructorSerializerSensitive'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstructorSerializerSensitive'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstructorSerializerSensitive'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstructorSerializerSensitive'
+          description: ''
+  /DzSkills/students/:
+    get:
+      operationId: DzSkills_students_list
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+          description: ''
+    post:
+      operationId: DzSkills_students_create
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Student'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+  /DzSkills/students/{id}/:
+    get:
+      operationId: DzSkills_students_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student.
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+    put:
+      operationId: DzSkills_students_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student.
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Student'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+    patch:
+      operationId: DzSkills_students_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student.
+        required: true
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStudent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedStudent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedStudent'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+  /DzSkills/students/{student_pk}/courses/:
+    get:
+      operationId: DzSkills_students_courses_list
+      parameters:
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentCourse'
+          description: ''
+  /DzSkills/students/{student_pk}/courses/{course_pk}/contents/:
+    get:
+      operationId: DzSkills_students_courses_contents_retrieve
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /DzSkills/students/{student_pk}/courses/{course_pk}/contents/{course_content_pk}/quiz/:
+    get:
+      operationId: DzSkills_students_courses_contents_quiz_list
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentQuiz'
+          description: ''
+  /DzSkills/students/{student_pk}/courses/{course_pk}/contents/{course_content_pk}/quiz/{id}/:
+    get:
+      operationId: DzSkills_students_courses_contents_quiz_retrieve
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz.
+        required: true
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentQuiz'
+          description: ''
+  /DzSkills/students/{student_pk}/courses/{course_pk}/contents/{course_content_pk}/quiz/{quiz_pk}/questions/:
+    get:
+      operationId: DzSkills_students_courses_contents_quiz_questions_list
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: quiz_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentQuizQuestion'
+          description: ''
+  /DzSkills/students/{student_pk}/courses/{course_pk}/contents/{course_content_pk}/quiz/{quiz_pk}/questions/{id}/:
+    get:
+      operationId: DzSkills_students_courses_contents_quiz_questions_retrieve
+      parameters:
+      - in: path
+        name: course_content_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: course_pk
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz question.
+        required: true
+      - in: path
+        name: quiz_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentQuizQuestion'
+          description: ''
+  /DzSkills/students/{student_pk}/courses/{course_pk}/contents/{id}/:
+    get:
+      operationId: DzSkills_students_courses_contents_retrieve_2
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course content.
+        required: true
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /DzSkills/students/{student_pk}/courses/{course_pk}/contents/{id}/progress/:
+    post:
+      operationId: DzSkills_students_courses_contents_progress_create
+      parameters:
+      - in: path
+        name: course_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course content.
+        required: true
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /DzSkills/students/{student_pk}/courses/{id}/:
+    get:
+      operationId: DzSkills_students_courses_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentCourse'
+          description: ''
+  /DzSkills/students/{student_pk}/courses/{id}/certificate/:
+    get:
+      operationId: DzSkills_students_courses_certificate_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentCourse'
+          description: ''
+  /DzSkills/students/{student_pk}/courses/{id}/progress/:
+    get:
+      operationId: DzSkills_students_courses_progress_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      - in: path
+        name: student_pk
+        schema:
+          type: string
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentCourse'
+          description: ''
+  /DzSkills/students/{student_pk}/subscribe/create_checkout_session/:
+    get:
+      operationId: DzSkills_students_subscribe_create_checkout_session_retrieve
+      parameters:
+      - in: path
+        name: student_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /DzSkills/students/courses/:
+    get:
+      operationId: DzSkills_students_courses_retrieve
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+  /DzSkills/students/me/:
+    get:
+      operationId: DzSkills_students_me_retrieve
+      tags:
+      - DzSkills
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+    put:
+      operationId: DzSkills_students_me_update
+      tags:
+      - DzSkills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Student'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+  /auth/jwt/create/:
+    post:
+      operationId: auth_jwt_create_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /auth/jwt/refresh/:
+    post:
+      operationId: auth_jwt_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /auth/jwt/verify/:
+    post:
+      operationId: auth_jwt_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+  /auth/users/:
+    get:
+      operationId: auth_users_list
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSerializers'
+          description: ''
+    post:
+      operationId: auth_users_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserCreateSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserCreateSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreateSerializers'
+          description: ''
+  /auth/users/{id}/:
+    get:
+      operationId: auth_users_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSerializers'
+          description: ''
+    put:
+      operationId: auth_users_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSerializers'
+          description: ''
+    patch:
+      operationId: auth_users_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSerializers'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSerializers'
+          description: ''
+    delete:
+      operationId: auth_users_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /auth/users/activation/:
+    post:
+      operationId: auth_users_activation_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Activation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Activation'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activation'
+          description: ''
+  /auth/users/me/:
+    get:
+      operationId: auth_users_me_retrieve
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSerializers'
+          description: ''
+    put:
+      operationId: auth_users_me_update
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSerializers'
+          description: ''
+    patch:
+      operationId: auth_users_me_partial_update
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSerializers'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSerializers'
+          description: ''
+    delete:
+      operationId: auth_users_me_destroy
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /auth/users/resend_activation/:
+    post:
+      operationId: auth_users_resend_activation_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /auth/users/reset_password/:
+    post:
+      operationId: auth_users_reset_password_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /auth/users/reset_password_confirm/:
+    post:
+      operationId: auth_users_reset_password_confirm_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordResetConfirm'
+          description: ''
+  /auth/users/reset_username/:
+    post:
+      operationId: auth_users_reset_username_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /auth/users/reset_username_confirm/:
+    post:
+      operationId: auth_users_reset_username_confirm_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsernameResetConfirm'
+          description: ''
+  /auth/users/set_password/:
+    post:
+      operationId: auth_users_set_password_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetPassword'
+          description: ''
+  /auth/users/set_username/:
+    post:
+      operationId: auth_users_set_username_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetUsername'
+          description: ''
+  /cancel/:
+    get:
+      operationId: cancel_retrieve
+      description: Render a template. Pass keyword arguments from the URLconf to the
+        context.
+      tags:
+      - cancel
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /logout/:
+    post:
+      operationId: logout_create
+      tags:
+      - logout
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /sub_success/:
+    get:
+      operationId: sub_success_retrieve
+      description: Render a template. Pass keyword arguments from the URLconf to the
+        context.
+      tags:
+      - sub_success
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /success/:
+    get:
+      operationId: success_retrieve
+      description: Render a template. Pass keyword arguments from the URLconf to the
+        context.
+      tags:
+      - success
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    Activation:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - token
+      - uid
+    ContentTypeEnum:
+      enum:
+      - video
+      - text
+      - quiz
+      - assignment
+      type: string
+      description: |-
+        * `video` - Video
+        * `text` - Text
+        * `quiz` - Quiz
+        * `assignment` - Assignment
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        instructor:
+          allOf:
+          - $ref: '#/components/schemas/Instructor'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+          maximum: 100000000
+          minimum: 0
+          exclusiveMaximum: true
+        thumbnail:
+          type: string
+          format: uri
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        duration_hours:
+          type: integer
+          readOnly: true
+          nullable: true
+        language:
+          type: string
+          maxLength: 50
+      required:
+      - created_at
+      - description
+      - duration_hours
+      - id
+      - instructor
+      - language
+      - price
+      - title
+      - updated_at
+    ForumPost:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserSerializers'
+          readOnly: true
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - content
+      - course
+      - created_at
+      - id
+      - title
+      - updated_at
+      - user
+    ForumPostComment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        post:
+          allOf:
+          - $ref: '#/components/schemas/ForumPost'
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserSerializers'
+          readOnly: true
+        comment:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - comment
+      - created_at
+      - id
+      - post
+      - updated_at
+      - user
+    Instructor:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        biography:
+          type: string
+          nullable: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserSerializers'
+          readOnly: true
+      required:
+      - id
+      - user
+    InstructorSerializerSensitive:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserSerializers'
+          readOnly: true
+        biography:
+          type: string
+          nullable: true
+        bank_Account:
+          type: string
+          nullable: true
+      required:
+      - id
+      - user
+    PasswordResetConfirm:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+        new_password:
+          type: string
+      required:
+      - new_password
+      - token
+      - uid
+    PatchedCourse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        instructor:
+          allOf:
+          - $ref: '#/components/schemas/Instructor'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+          maximum: 100000000
+          minimum: 0
+          exclusiveMaximum: true
+        thumbnail:
+          type: string
+          format: uri
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        duration_hours:
+          type: integer
+          readOnly: true
+          nullable: true
+        language:
+          type: string
+          maxLength: 50
+    PatchedForumPost:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserSerializers'
+          readOnly: true
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedForumPostComment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        post:
+          allOf:
+          - $ref: '#/components/schemas/ForumPost'
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserSerializers'
+          readOnly: true
+        comment:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedInstructorSerializerSensitive:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserSerializers'
+          readOnly: true
+        biography:
+          type: string
+          nullable: true
+        bank_Account:
+          type: string
+          nullable: true
+    PatchedQuiz:
+      type: object
+      description: Serializer for Quiz model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course_content:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedQuizQuestion:
+      type: object
+      description: Serializer for QuizQuestion model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        quiz:
+          allOf:
+          - $ref: '#/components/schemas/Quiz'
+          readOnly: true
+        question_text:
+          type: string
+        possible_answers: {}
+        correct_answer:
+          type: string
+          maxLength: 500
+    PatchedStudent:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserSerializers'
+          readOnly: true
+        biography:
+          type: string
+    PatchedUserSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+    Quiz:
+      type: object
+      description: Serializer for Quiz model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course_content:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - course_content
+      - created_at
+      - id
+      - title
+    QuizQuestion:
+      type: object
+      description: Serializer for QuizQuestion model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        quiz:
+          allOf:
+          - $ref: '#/components/schemas/Quiz'
+          readOnly: true
+        question_text:
+          type: string
+        possible_answers: {}
+        correct_answer:
+          type: string
+          maxLength: 500
+      required:
+      - correct_answer
+      - id
+      - possible_answers
+      - question_text
+      - quiz
+    SendEmailReset:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    SetPassword:
+      type: object
+      properties:
+        new_password:
+          type: string
+        current_password:
+          type: string
+      required:
+      - current_password
+      - new_password
+    SetUsername:
+      type: object
+      properties:
+        current_password:
+          type: string
+        new_username:
+          type: string
+          title: Username
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - current_password
+      - new_username
+    Student:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserSerializers'
+          readOnly: true
+        biography:
+          type: string
+      required:
+      - id
+      - user
+    StudentCourse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        instructor:
+          allOf:
+          - $ref: '#/components/schemas/Instructor'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+          maximum: 100000000
+          minimum: 0
+          exclusiveMaximum: true
+        thumbnail:
+          type: string
+          format: uri
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        duration_hours:
+          type: integer
+          readOnly: true
+          nullable: true
+        language:
+          type: string
+          maxLength: 50
+        percentage:
+          type: string
+          readOnly: true
+      required:
+      - created_at
+      - description
+      - duration_hours
+      - id
+      - instructor
+      - language
+      - percentage
+      - price
+      - title
+      - updated_at
+    StudentQuiz:
+      type: object
+      description: Serializer for Quiz model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course_content:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - course_content
+      - created_at
+      - id
+      - title
+    StudentQuizQuestion:
+      type: object
+      description: Serializer for QuizQuestion model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        quiz:
+          allOf:
+          - $ref: '#/components/schemas/Quiz'
+          readOnly: true
+        question_text:
+          type: string
+        possible_answers: {}
+        correct_answer:
+          type: string
+          maxLength: 500
+      required:
+      - correct_answer
+      - id
+      - possible_answers
+      - question_text
+      - quiz
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
+    UnEnrolledStudentCourseContent:
+      type: object
+      description: Serializer for CourseContent model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        uploaded_at:
+          type: string
+          format: date-time
+          readOnly: true
+        duration_minutes:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        content_data_file:
+          type: string
+          format: uri
+        is_free_preview:
+          type: boolean
+        quizzes:
+          allOf:
+          - $ref: '#/components/schemas/StudentQuiz'
+          readOnly: true
+      required:
+      - content_type
+      - duration_minutes
+      - id
+      - quizzes
+      - title
+      - uploaded_at
+    UserCreateSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - email
+      - id
+      - password
+      - username
+    UserSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - email
+      - id
+      - username
+    UsernameResetConfirm:
+      type: object
+      properties:
+        new_username:
+          type: string
+          title: Username
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - new_username
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "JWT"

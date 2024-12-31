@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Success</title>
+    <script>
+        // Get the student ID from a hidden input or pass it via a context variable
+        const studentId = {{ student.id }};  // Django template syntax
+        const redirectUrl = "{% url 'student_courses' %}";
+        // Redirect after 3 seconds
+        setTimeout(function() {
+            window.location.href = redirectUrl;
+        }, 30000);
+    </script>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 50px;">
+        <h1>Payment Successful!</h1>
+        <p>You will be redirected to your courses in 3 seconds...</p>
+        
+        <p>If you are not redirected, click the button below:</p>
+        <a href="{% url 'student_courses' %}" 
+           style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+            Go to My Courses
+        </a>
+    </div>
+</body>
+</html>
