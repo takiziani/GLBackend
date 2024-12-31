@@ -2,8 +2,9 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
-
+import environ
+env = environ.Env()
+environ.Env.read_env()
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ProjetGL.settings')
@@ -15,7 +16,9 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
-    execute_from_command_line(sys.argv)
+    
+    port = os.getenv('PORT')
+    execute_from_command_line([sys.argv[0], 'runserver', f'0.0.0.0:{port}'])
 
 
 if __name__ == '__main__':

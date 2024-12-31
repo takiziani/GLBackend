@@ -80,9 +80,6 @@ INSTALLED_APPS = [
     ]
 
 INTERNAL_IPS = [
-    # ...
-    "127.0.0.1",
-    # ...
 ]
 
 MIDDLEWARE = [
@@ -161,6 +158,8 @@ WSGI_APPLICATION = 'ProjetGL.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+env = environ.Env()
+environ.Env.read_env()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -274,11 +273,3 @@ SUBSCRIPTION = {
     'PRICE': '100',
     'DURATION': '120',
 }
-
-
-
-
-
-
-
-
