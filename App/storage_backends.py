@@ -2,11 +2,16 @@ import os
 from django.core.files.storage import Storage
 from supabase import create_client, Client
 
+import os
+from django.core.files.storage import Storage
+from supabase import create_client, Client
+from django.conf import settings
+
 class SupabaseStorage(Storage):
     def __init__(self):
-        self.url = os.getenv("SUPABASE_URL")
-        self.key = os.getenv("SUPABASE_KEY")
-        self.bucket = os.getenv("SUPABASE_BUCKET")
+        self.url = settings.SUPABASE_URL
+        self.key = settings.SUPABASE_KEY
+        self.bucket = settings.SUPABASE_BUCKET
         self.client: Client = create_client(self.url, self.key)
 
     def _save(self, name, content):
