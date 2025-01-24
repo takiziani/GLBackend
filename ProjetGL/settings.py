@@ -77,9 +77,13 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'App',
     'drf_spectacular',
-    ]
+    'django_filters',
+]
 
 INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
 ]
 
 MIDDLEWARE = [
@@ -158,6 +162,16 @@ WSGI_APPLICATION = 'ProjetGL.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env.str('POSTGRES_DB'),
+#         'USER': env.str('POSTGRES_USER'),
+#         'PASSWORD': env.str('POSTGRES_PASSWORD'),
+#         'HOST': env.str('POSTGRES_HOST', default='localhost'),  # This matches the service name in docker-compose.yml
+#         'PORT': '5432',
+#     }
+# }
 env = environ.Env()
 environ.Env.read_env()
 DATABASES = {
@@ -170,7 +184,6 @@ DATABASES = {
         'PORT': env('SUPABASE_DB_PORT', default='5432'),
     }
 }
-
 
 
 
@@ -273,3 +286,11 @@ SUBSCRIPTION = {
     'PRICE': '100',
     'DURATION': '120',
 }
+
+
+
+AUTH_USER_MODEL = 'App.User'
+
+
+
+

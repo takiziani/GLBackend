@@ -5,9 +5,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta
-
-
-
+from .storage_backends import SupabaseStorage
 class User(AbstractUser):
 
     email = models.EmailField(unique=True)
@@ -45,14 +43,11 @@ class Student(models.Model):
         return f"{self.user.first_name} {self.user.last_name}'s Student Profile"
 
 class Course(models.Model):
-      
     instructor = models.ForeignKey(
         Instructor, 
         on_delete=models.CASCADE, 
         related_name='courses'
     )
-
-
     title = models.CharField(max_length=200)
     description = models.TextField()
     price = models.DecimalField(
@@ -60,27 +55,17 @@ class Course(models.Model):
         decimal_places=2, 
         validators=[MinValueValidator(0)]
     )
-
-
-    thumbnail = models.ImageField(
-        upload_to='course_thumbnails/', 
-        null=True, 
-        blank=True
-    )
-
-    
-
+    thumbnail = models.ImageField(upload_to='course_thumbnails/', storage=SupabaseStorage(), null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     duration_hours = models.IntegerField(
-        validators=[MinValueValidator(0)]
-        , null=True
+        validators=[MinValueValidator(0)],
+        null=True
     )
     language = models.CharField(max_length=50)
     
     def __str__(self):
         return self.title
-
 class CourseContent(models.Model):
     """Individual content units within a course"""
     CONTENT_TYPES = (
@@ -100,7 +85,7 @@ class CourseContent(models.Model):
         max_length=20, 
         choices=CONTENT_TYPES
     )
-    content_data_file = models.FileField(upload_to='course_contents/' , null=True)
+    content_data_file = models.FileField(upload_to='course_contents/', storage=SupabaseStorage(), null=True)
     uploaded_at = models.DateTimeField(auto_now=True)
     duration_minutes = models.IntegerField(
         validators=[MinValueValidator(0)]
@@ -239,7 +224,7 @@ class ForumPost(models.Model):
     # is_solution = models.BooleanField(default=False)
     
     def __str__(self):
-        return f"Post by {self.user.username} in {self.topic.title}"
+        return f"Post by {self.user.username} in {self.title}"
     
 
 class ForumPostComment(models.Model):
@@ -260,7 +245,7 @@ class ForumPostComment(models.Model):
     # is_solution = models.BooleanField(default=False)
     
     def __str__(self):
-        return f"post about: {self.Post.topic} comment: {self.comment} by: {self.user.__str__} "
+        return f"post about: {self.Post.title} comment: {self.comment} by: {self.user.__str__} "
 
 # class Subscription(models.Model):
 #     """Subscription plans for the platform"""

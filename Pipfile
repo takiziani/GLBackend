@@ -7,10 +7,12 @@ name = "pypi"
 django = "*"
 django-debug-toolbar = "*"
 drf-nested-routers = "*"
+django-filter = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-django = "*"
+model-bakery = "*"
 
 [requires]
 python_version = "3.13"

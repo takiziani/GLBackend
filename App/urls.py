@@ -1,10 +1,13 @@
 from django.urls import path, include
 from .views import (InstructorViewSet, StudentViewSet , HomeCourseViewSet , CourseViewSet ,
-                    CourseContentViewSet , QuizViewSet , QuizViewQuestionViewSet , ForumPostViewSet
+                    CourseContentViewSet , QuizViewSet , QuizQuestionViewSet , ForumPostViewSet
                     , ForumPostCommentViewSet  , CreateCheckoutSessionForPaymentView   
                     , StripeWebhookView , StudentCourseContentViewSet , StudentCourseViewSet,
                     StudentQuizViewSet , StudentQuizQuestionViewSet , HomeCourseContentViewSet
-                    , CreateCheckoutSessionForSubscriptionView ,activateaffiliation,generateaffiliationlink,returnaffiliationlinks,handelaffiliatelinks,getaffiliationearning) 
+
+                    , CreateCheckoutSessionForSubscriptionView  , EnrollmentViewSet
+
+                     ,activateaffiliation,generateaffiliationlink,returnaffiliationlinks,handelaffiliatelinks,getaffiliationearning) 
 from rest_framework_nested import routers
 from pprint import pprint
 from django.conf import settings
@@ -15,6 +18,8 @@ router = routers.DefaultRouter()
 router.register('instructors', InstructorViewSet)
 router.register('students', StudentViewSet)
 router.register('courses', HomeCourseViewSet)
+router.register('enrollment', EnrollmentViewSet)
+
 
 # course_router_pay = routers.NestedDefaultRouter(router , 'courses' , lookup = 'course')
 # course_router_pay.register('create_checkout_session' , CourseLandingPageView  , basename = 'course-create_checkout_session')
@@ -41,7 +46,7 @@ Quiz_router = routers.NestedDefaultRouter(course_router, 'contents', lookup='cou
 Quiz_router.register('quiz', QuizViewSet, basename='course-quizzes')
 
 Quiz_questions_router = routers.NestedDefaultRouter(Quiz_router, 'quiz', lookup='quiz')
-Quiz_questions_router.register('questions', QuizViewQuestionViewSet, basename='quiz-questions')
+Quiz_questions_router.register('questions', QuizQuestionViewSet, basename='quiz-questions')
 
 
 

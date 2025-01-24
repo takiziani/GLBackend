@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render , redirect
 from rest_framework import viewsets 
-from rest_framework.mixins import CreateModelMixin , UpdateModelMixin , RetrieveModelMixin , ListModelMixin
+from rest_framework.mixins import CreateModelMixin , UpdateModelMixin , RetrieveModelMixin , ListModelMixin , DestroyModelMixin
 from .models import (Instructor, Student , StudentProgress, User ,Course , CourseContent , Quiz , QuizQuestion  ,
                      ForumPostComment , ForumPost , Payment_Order , StripePayment , Enrollment , Certificate , StudentSubscription,Affiliation,affiliatedusers)
 from .serializers import (InstructorSerializer, StudentSerializer , CourseSerializer , 
@@ -8,8 +8,8 @@ from .serializers import (InstructorSerializer, StudentSerializer , CourseSerial
                           QuizQuestionSerializer , ForumPostSerializer , ForumPostCommentSerializer,
                           StudentCourseContentSerializer , StudentQuizSerializer ,
                           StudentQuizQuestionSerializer ,StudentProgressSerializer, CourseContentWithQuizSerializer,
-                          StudentCourseSerializer , UnEnrolledStudentCourseContentSerializer , CertificateSerializer)
-from rest_framework.permissions import IsAuthenticated , SAFE_METHODS 
+                          StudentCourseSerializer , UnEnrolledStudentCourseContentSerializer , CertificateSerializer , EnrollmentSerializer)
+from rest_framework.permissions import IsAuthenticated , SAFE_METHODS , IsAdminUser
 from rest_framework.viewsets import GenericViewSet , ReadOnlyModelViewSet , ModelViewSet 
 from django.views import View
 from rest_framework.decorators import action
@@ -39,9 +39,15 @@ from django.utils import timezone
 from datetime import timedelta
 from django.urls import reverse_lazy
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .permissions import IsCourseInstructorOrReadOnly , IsInstructorOrReadOnly , IsStudent
+from .permissions import IsCourseInstructorOrReadOnly , IsInstructorOrReadOnly , IsStudent , IsUserPost , IsUserComment , IsExistStudentForUser
+from rest_framework import status
+from django.db import connection
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Func, F, Value, CharField
+from django.db.models.functions import Concat, ExtractMonth, ExtractYear
 
-class InstructorViewSet(ListModelMixin , CreateModelMixin, RetrieveModelMixin , UpdateModelMixin , GenericViewSet):
+class InstructorViewSet(ListModelMixin , CreateModelMixin, RetrieveModelMixin , UpdateModelMixin , GenericViewSet , DestroyModelMixin):
     queryset = Instructor.objects.all()
     serializer_class = InstructorSerializer
     permission_classes = [IsAuthenticated , IsInstructorOrReadOnly]
@@ -51,7 +57,7 @@ class InstructorViewSet(ListModelMixin , CreateModelMixin, RetrieveModelMixin , 
         serializer = InstructorSerializerSensitive(instructor, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data , status=status.HTTP_201_CREATED)
 
     def get_permissions(self):
         if(self.request.method == 'POST'):
@@ -67,12 +73,14 @@ class InstructorViewSet(ListModelMixin , CreateModelMixin, RetrieveModelMixin , 
     
     @action(detail = False , methods = ['GET', 'PUT'] , permission_classes = [IsAuthenticated])
     def me(self, request):
-       (instructor , is_created) = Instructor.objects.get_or_create(user=request.user.id)
-       if not is_created :
-        if( request.method == 'GET'):
-               ser_data = InstructorSerializer(instructor)  
-               return Response(ser_data.data)
-        elif( request.method == 'PUT'):
+       (instructor , is_created) = Instructor.objects.get_or_create(user=request.user)
+       if  is_created :
+            return Response("instructor does not exist")
+        
+       if( request.method == 'GET'):
+              ser_data = InstructorSerializer(instructor)  
+              return Response(ser_data.data)
+       elif( request.method == 'PUT'):
            ser_data = InstructorSerializer(instructor , data= request.data)
            ser_data.is_valid(raise_exception=True)
            ser_data.save()
@@ -94,7 +102,7 @@ class StudentViewSet(  GenericViewSet, CreateModelMixin,  RetrieveModelMixin,  U
         serializer = StudentSerializer(student, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data , status=status.HTTP_201_CREATED)
 
     
     @action(detail = False , methods = ['GET', 'PUT'] , permission_classes = [IsAuthenticated])
@@ -244,8 +252,13 @@ class QuizViewSet( ModelViewSet ):
 
            return {'course_content_id' : self.kwargs['course_content_pk']
                   }          
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
         
-class QuizViewQuestionViewSet( ModelViewSet ):
+class QuizQuestionViewSet( ModelViewSet ):
        
     queryset = QuizQuestion.objects.all()
     serializer_class = QuizQuestionSerializer
@@ -253,12 +266,25 @@ class QuizViewQuestionViewSet( ModelViewSet ):
     
     def get_queryset(self):
             quiz_pk = self.kwargs['quiz_pk']
+            
             q= QuizQuestion.objects.filter(quiz=quiz_pk)
+            
             is_free = CourseContent.objects.get(pk = self.kwargs['course_content_pk']).is_free_preview
+            
             if (is_free):
                 return q
             try:
+                
+                 
                  course_pk = self.kwargs['course_pk']
+                 instructor = Instructor.objects.filter(user = self.request.user).last()
+
+                 is_course_inst = Course.objects.filter( pk = course_pk , instructor = instructor).exists()
+
+                 if(is_course_inst):
+                     return q
+                 
+                                 
                  student = Student.objects.get(user = self.request.user)
                  course_pk = self.kwargs['course_pk']
                  
@@ -273,7 +299,7 @@ class QuizViewQuestionViewSet( ModelViewSet ):
                  return QuizQuestion.objects.none()
             except:
                 return QuizQuestion.objects.none()
-            return QuizQuestion.objects.filter(quiz=quiz_pk)
+            # return QuizQuestion.objects.filter(quiz=quiz_pk)
         
     
     def get_serializer_context(self):
@@ -282,7 +308,7 @@ class QuizViewQuestionViewSet( ModelViewSet ):
 
 class ForumPostViewSet( ModelViewSet ):
        
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated , IsUserPost]
     queryset = ForumPost.objects.all()
     serializer_class = ForumPostSerializer
     
@@ -313,11 +339,11 @@ class ForumPostViewSet( ModelViewSet ):
         
         serializer.save()
         
-        return Response(serializer.data)
+        return Response(serializer.data , status=status.HTTP_201_CREATED)
         
 class ForumPostCommentViewSet( ModelViewSet ):
        
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated , IsUserComment]
     queryset = ForumPostComment.objects.all()
     serializer_class = ForumPostCommentSerializer
     
@@ -344,7 +370,7 @@ class ForumPostCommentViewSet( ModelViewSet ):
         
         serializer.save()
         
-        return Response(serializer.data)
+        return Response(serializer.data , status=status.HTTP_201_CREATED)
 
 #######"" for student
 class StudentQuizQuestionViewSet( ReadOnlyModelViewSet ):
@@ -458,12 +484,14 @@ class StudentCourseContentViewSet( ReadOnlyModelViewSet ):
     
     
     def get_queryset(self):
+        
             course_pk = self.kwargs['course_pk']            
             local_queryset = CourseContent.objects.filter(course_id=course_pk)
             return local_queryset
         
     
     def get_serializer_context(self):
+        
         # Pass additional context to the serializer
         context = super().get_serializer_context()
         context['student_pk'] = self.kwargs['student_pk']  # Pass student_pk to the serializer
@@ -474,9 +502,7 @@ class StudentCourseContentViewSet( ReadOnlyModelViewSet ):
         
         student_id = self.kwargs['student_pk']
         
-        
         is_sub = StudentSubscription.is_sub(None , student_id)
-        
         
         is_enrolled = Enrollment.objects.filter(
             student_id=self.kwargs['student_pk'],
@@ -575,6 +601,8 @@ class CancelView(TemplateView, APIView):
     
 class CreateCheckoutSessionForPaymentView(APIView):
     
+    
+    
     def get_thumbnail_url(self , course : Course):
         if not course.thumbnail:
             return settings.DEFAULT_THUMBNAIL_URL
@@ -593,7 +621,7 @@ class CreateCheckoutSessionForPaymentView(APIView):
     
     
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated , IsExistStudentForUser]
     def get(self, request, course_pk):
         try:
             # Ensure Stripe is configured
@@ -864,7 +892,8 @@ class StripeWebhookView(View):
 class CreateCheckoutSessionForSubscriptionView(APIView): 
     
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated , IsExistStudentForUser]
+    
     def get(self, request ,  student_pk):
         try:
             # Ensure Stripe is configured
@@ -976,6 +1005,35 @@ class returnaffiliationlinks(ReadOnlyModelViewSet):
 class handelaffiliatelinks(APIView):
     permission_classes = [IsAuthenticated]
 
+class EnrollmentViewSet(ReadOnlyModelViewSet):
+    permission_classes = [IsAdminUser]
+    serializer_class = EnrollmentSerializer
+
+    queryset = Enrollment.objects.select_related(
+        'course',
+        'course__instructor',
+        'course__instructor__user'
+    ).annotate(
+        month_year=Concat(
+            ExtractMonth(F('enrolled_at')),
+            Value('/'),
+            ExtractYear(F('enrolled_at')),
+            output_field=CharField()
+        )
+    ).values(
+        'id',
+        'enrolled_at',
+        'course_id',
+        'course__title',
+        'course__price',
+        'course__instructor_id',
+        'course__instructor__bank_Account',
+        'course__instructor__user_id',
+        'course__instructor__user__first_name',
+        'course__instructor__user__last_name',
+        'course__instructor__user__username',
+        'month_year'  # Include the annotated field in the values
+    )
     def get(self, request,course_pk):
         referalcode = request.GET.get('referalcode')
         if not referalcode:

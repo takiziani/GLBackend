@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import  (Instructor, Student, User , Course , CourseContent , Quiz , 
                       StudentProgress , QuizQuestion  , ForumPostComment , ForumPost , Payment_Order
-                      , Certificate)
+                      , Certificate , Enrollment)
 from djoser.serializers import UserCreateSerializer as dj_user_create
 from djoser.serializers import UserSerializer as dj_user
 
@@ -512,3 +512,32 @@ class CreateCheckoutSessionSerializer(serializers.Serializer):
     cancel_url = serializers.CharField()
     class Meta:
         fields = ['order_id', 'success_url', 'cancel_url']
+        
+        
+        
+class EnrollmentSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    enrolled_at = serializers.DateTimeField()
+    course_id = serializers.IntegerField()
+    course_title = serializers.CharField(source='course__title')
+    course_price = serializers.DecimalField(source='course__price', max_digits=10, decimal_places=2)
+    instructor_id = serializers.IntegerField(source='course__instructor_id')
+    instructor_bank_account = serializers.CharField(source='course__instructor__bank_Account')
+    user_id = serializers.IntegerField(source='course__instructor__user_id')
+    user_first_name = serializers.CharField(source='course__instructor__user__first_name')
+    user_last_name = serializers.CharField(source='course__instructor__user__last_name')
+    user_username = serializers.CharField(source='course__instructor__user__username')
+    month_year = serializers.CharField()  # Include the month_year field
+    class Meta:
+        model = Enrollment
+        fields = [
+            'id', 
+            'enrolled_at',
+            'course_id', 
+            'title', 
+            'price',
+            'bank_Account',
+            'first_name',
+            'last_name',
+            'username'
+        ]

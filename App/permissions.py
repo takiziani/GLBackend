@@ -1,6 +1,6 @@
 from rest_framework.permissions import IsAuthenticated , BasePermission , SAFE_METHODS
 
-from .models import (Instructor, Student , StudentProgress, User ,Course )
+from .models import (Instructor, Student , StudentProgress, User ,Course , ForumPost , ForumPostComment )
 
 
 class IsCourseInstructorOrReadOnly(BasePermission):
@@ -21,6 +21,9 @@ class IsCourseInstructorOrReadOnly(BasePermission):
                 if key in view.kwargs:
                     inst_pk = int(view.kwargs[key])
             instructor = Instructor.objects.filter(user = request.user).last()
+            
+            if not instructor:
+                return False
             
             if (request.method == 'POST' and (instructor.pk == inst_pk)):
                 return True
@@ -73,6 +76,43 @@ class IsStudent(BasePermission):
                 return False
         else:
             return False
+        
+class IsExistStudentForUser(BasePermission):
+    def has_permission (self, request, view) :
+        
+        return Student.objects.filter(user = request.user).exists()
+        
+class IsUserPost(BasePermission):
+    def has_permission (self, request, view) :
+       
+        
+        if(request.method in ['PUT' , 'DELETE' , 'PATCH']  ):
+            current_user = request.user
+            post_pk = view.kwargs.get('pk')
+            print(post_pk)
+            b = ForumPost.objects.filter(pk = post_pk , user = current_user).exists()
+            print("b:::", b)
+            return b
+        
+        
+        return True
+        
+        
+class IsUserComment(BasePermission):
+    def has_permission (self, request, view) :
+       
+        
+        if(request.method in ['PUT' , 'DELETE' , 'PATCH']  ):
+            current_user = request.user
+            comment_pk = view.kwargs.get('pk')
+            print(comment_pk)
+            b = ForumPostComment.objects.filter(pk = comment_pk , user = current_user).exists()
+            print("b:::", b)
+            return b
+        
+        
+        return True
+        
         
         
 class IsCourseStudent(BasePermission):
