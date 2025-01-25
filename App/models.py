@@ -33,12 +33,7 @@ class Student(models.Model):
         on_delete=models.CASCADE, 
         related_name='student_profile'
     )
-    
     biography = models.TextField(blank=True, null=False)
-    
-    
-    
-    
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}'s Student Profile"
 

@@ -53,7 +53,17 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         user = self.user
-        role = 'student' if hasattr(user, 'student') else 'instructor' if hasattr(user, 'instructor') else 'user'
+        user_id = user.id
+        
+        # Check if the user is an instructor
+        if Instructor.objects.filter(user_id=user_id).exists():
+            role = 'instructor'
+        # Check if the user is a student
+        elif Student.objects.filter(user_id=user_id).exists():
+            role = 'student'
+        else:
+            role = 'user'
+        
         data['role'] = role
         return data
 
