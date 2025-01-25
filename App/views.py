@@ -46,6 +46,19 @@ from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Func, F, Value, CharField
 from django.db.models.functions import Concat, ExtractMonth, ExtractYear
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user = self.user
+        role = 'student' if hasattr(user, 'student') else 'instructor' if hasattr(user, 'instructor') else 'user'
+        data['role'] = role
+        return data
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 class InstructorViewSet(ListModelMixin , CreateModelMixin, RetrieveModelMixin , UpdateModelMixin , GenericViewSet , DestroyModelMixin):
     queryset = Instructor.objects.all()
