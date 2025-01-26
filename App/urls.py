@@ -7,7 +7,8 @@ from .views import (InstructorViewSet, StudentViewSet , HomeCourseViewSet , Cour
 
                     , CreateCheckoutSessionForSubscriptionView  , EnrollmentViewSet
 
-                     ,activateaffiliation,generateaffiliationlink,returnaffiliationlinks,handelaffiliatelinks,getaffiliationearning,CustomTokenObtainPairSerializer, CustomTokenObtainPairView) 
+                     ,activateaffiliation,generateaffiliationlink,returnaffiliationlinks,handelaffiliatelinks,getaffiliationearning,
+                     CustomTokenObtainPairView) 
 from rest_framework_nested import routers
 from pprint import pprint
 from django.conf import settings
@@ -107,4 +108,5 @@ urlpatterns = [
     path('affiliation/<int:course_pk>/contents/',handelaffiliatelinks.as_view(),name='handel_affiliation_links'),
     path('affiliate/earning/',getaffiliationearning.as_view({'get': 'list'}),name='get_affiliation_earning'),
     path("api/token/",CustomTokenObtainPairView.as_view(),name="token_obtain_pair"),
+
 ]

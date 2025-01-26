@@ -5,9 +5,13 @@ from .models import (Instructor, Student , StudentProgress, User ,Course , Forum
 
 class IsCourseInstructorOrReadOnly(BasePermission):
     def has_permission (self, request, view) :
-        if request and (request.method in SAFE_METHODS):
-            return True
         
+        print("hello 1\n")
+        
+        if request and (request.method in SAFE_METHODS):
+            print("hello 2")
+            return True
+
         
         
         else:

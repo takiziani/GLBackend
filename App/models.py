@@ -5,7 +5,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta
-from .storage_backends import SupabaseStorage
 class User(AbstractUser):
 
     email = models.EmailField(unique=True)
@@ -33,7 +32,12 @@ class Student(models.Model):
         on_delete=models.CASCADE, 
         related_name='student_profile'
     )
+    
     biography = models.TextField(blank=True, null=False)
+    
+    
+    
+    
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}'s Student Profile"
 
@@ -50,7 +54,7 @@ class Course(models.Model):
         decimal_places=2, 
         validators=[MinValueValidator(0)]
     )
-    thumbnail = models.ImageField(upload_to='course_thumbnails/',null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='course_thumbnails/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     duration_hours = models.IntegerField(
@@ -80,7 +84,7 @@ class CourseContent(models.Model):
         max_length=20, 
         choices=CONTENT_TYPES
     )
-    content_data_file = models.FileField(upload_to='course_contents/', storage=SupabaseStorage(), null=True)
+    content_data_file = models.FileField(upload_to='course_contents/', null=True)
     uploaded_at = models.DateTimeField(auto_now=True)
     duration_minutes = models.IntegerField(
         validators=[MinValueValidator(0)]
@@ -221,7 +225,6 @@ class ForumPost(models.Model):
     def __str__(self):
         return f"Post by {self.user.username} in {self.title}"
     
-
 class ForumPostComment(models.Model):
     """Individual posts within a forum topic"""
     post = models.ForeignKey(
@@ -283,28 +286,11 @@ class StudentSubscription(models.Model):
     def is_sub(student : Student  , std_id  : int  = -1 ):
        sub= None
        if std_id !=-1:
-           print(std_id , "i am in id")
            sub =  StudentSubscription.objects.filter(student_id = std_id).last() 
        else:
-           print(std_id , "i am in obj")
            sub =  StudentSubscription.objects.filter(student_id = student.pk).last()  
-       print("\nA2\n")
        print(sub)
        return (  (sub ) and ( sub.end_date >= timezone.now() ) )
-
-
-class Payment_Order(models.Model):
-
-    student = models.ForeignKey(
-        Student, 
-        on_delete=models.PROTECT, 
-        related_name='payments'
-    )
-    course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name='course_payment_orders')    
-    
-    def __str__(self):
-        return f"Payment {self.student.__str__} - {self.course}"
-    
 
 class StripePayment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.PROTECT, related_name='stripe_payments')

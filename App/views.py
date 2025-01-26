@@ -2,13 +2,14 @@ from django.shortcuts import get_object_or_404, render , redirect
 from rest_framework import viewsets 
 from rest_framework.mixins import CreateModelMixin , UpdateModelMixin , RetrieveModelMixin , ListModelMixin , DestroyModelMixin
 from .models import (Instructor, Student , StudentProgress, User ,Course , CourseContent , Quiz , QuizQuestion  ,
-                     ForumPostComment , ForumPost , Payment_Order , StripePayment , Enrollment , Certificate , StudentSubscription,Affiliation,affiliatedusers)
+                     ForumPostComment , ForumPost  , StripePayment , Enrollment , Certificate , StudentSubscription,Affiliation,affiliatedusers)
 from .serializers import (InstructorSerializer, StudentSerializer , CourseSerializer , 
                           InstructorSerializerSensitive , CourseContentSerializer , QuizSerializer ,
                           QuizQuestionSerializer , ForumPostSerializer , ForumPostCommentSerializer,
                           StudentCourseContentSerializer , StudentQuizSerializer ,
                           StudentQuizQuestionSerializer ,StudentProgressSerializer, CourseContentWithQuizSerializer,
-                          StudentCourseSerializer , UnEnrolledStudentCourseContentSerializer , CertificateSerializer , EnrollmentSerializer)
+                          StudentCourseSerializer , UnEnrolledStudentCourseContentSerializer , CertificateSerializer , EnrollmentSerializer,
+                          CustomTokenObtainPairSerializer)
 from rest_framework.permissions import IsAuthenticated , SAFE_METHODS , IsAdminUser
 from rest_framework.viewsets import GenericViewSet , ReadOnlyModelViewSet , ModelViewSet 
 from django.views import View
@@ -47,28 +48,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Func, F, Value, CharField
 from django.db.models.functions import Concat, ExtractMonth, ExtractYear
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        user = self.user
-        user_id = user.id
-        
-        # Check if the user is an instructor
-        if Instructor.objects.filter(user_id=user_id).exists():
-            role = 'instructor'
-        # Check if the user is a student
-        elif Student.objects.filter(user_id=user_id).exists():
-            role = 'student'
-        else:
-            role = 'user'
-        
-        data['role'] = role
-        return data
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
 
 class InstructorViewSet(ListModelMixin , CreateModelMixin, RetrieveModelMixin , UpdateModelMixin , GenericViewSet , DestroyModelMixin):
     queryset = Instructor.objects.all()
@@ -96,9 +75,8 @@ class InstructorViewSet(ListModelMixin , CreateModelMixin, RetrieveModelMixin , 
     
     @action(detail = False , methods = ['GET', 'PUT'] , permission_classes = [IsAuthenticated])
     def me(self, request):
-       (instructor , is_created) = Instructor.objects.get_or_create(user=request.user)
-       if  is_created :
-            return Response("instructor does not exist")
+       (instructor ) = get_object_or_404(Instructor , user=request.user)
+       
         
        if( request.method == 'GET'):
               ser_data = InstructorSerializer(instructor)  
@@ -130,10 +108,7 @@ class StudentViewSet(  GenericViewSet, CreateModelMixin,  RetrieveModelMixin,  U
     
     @action(detail = False , methods = ['GET', 'PUT'] , permission_classes = [IsAuthenticated])
     def me(self, request):
-        (student , is_created) = Student.objects.get_or_create(user=request.user)
-       
-        if  is_created :
-            return Response("student does not exist")
+        (student ) = get_object_or_404(Student , user=request.user)
         
 
         if( request.method == 'GET'):
@@ -200,7 +175,7 @@ class CourseContentViewSet( ModelViewSet ):
        
        
     queryset = CourseContent.objects.all()
-    serializer_class = CourseContentWithQuizSerializer
+    serializer_class = UnEnrolledStudentCourseContentSerializer
     permission_classes = [IsAuthenticated , IsCourseInstructorOrReadOnly]
     
     def get_queryset(self):
@@ -1089,3 +1064,8 @@ class getaffiliationearning(ReadOnlyModelViewSet):
             for affiliateduser in affiliatedusers:
                 total_earning += affiliateduser.earning
         return JsonResponse({'total_earning': total_earning})
+
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

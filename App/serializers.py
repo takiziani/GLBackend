@@ -1,17 +1,15 @@
+import base64
 from rest_framework import serializers
 from .models import  (Instructor, Student, User , Course , CourseContent , Quiz , 
-                      StudentProgress , QuizQuestion  , ForumPostComment , ForumPost , Payment_Order
+                      StudentProgress , QuizQuestion  , ForumPostComment , ForumPost 
                       , Certificate , Enrollment)
 from djoser.serializers import UserCreateSerializer as dj_user_create
 from djoser.serializers import UserSerializer as dj_user
-
-
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserCreateSerializers(dj_user_create):
     class Meta(dj_user_create.Meta):
         fields = ['id' , 'email' , 'password' , 'username' , 'first_name' , 'last_name'  ]
-
-
 
 class UserSerializers(dj_user):
     id = serializers.IntegerField(read_only=True)
@@ -71,6 +69,8 @@ class CreteCourseSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     instructor = InstructorSerializer(read_only = True)
+    thumbnail_data = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Course
@@ -80,7 +80,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'title',
             'description',
             'price',
-            'thumbnail',
+            'thumbnail_data',
             'created_at',
             'updated_at',
             'duration_hours',
@@ -107,16 +107,28 @@ class CourseSerializer(serializers.ModelSerializer):
         return instance
 
 
+    def get_thumbnail_data(self, instance):
+        if instance.thumbnail and instance.thumbnail.storage.exists(instance.thumbnail.name):
+            try:
+                with instance.thumbnail.open('rb') as file:
+                    return base64.b64encode(file.read()).decode('utf-8')
+            except Exception:
+                return None
+        return None
+
 class CourseContentSerializer(serializers.ModelSerializer):
     """Serializer for CourseContent model"""
-    
+    content_data = serializers.SerializerMethodField()
+    content_data_file = serializers.FileField(write_only=True, required=False)
+
     class Meta:
         model = CourseContent
         fields = [
             'id',
             'title',
             'content_type',
-            'content_data_file',
+            'content_data_file',  # For upload
+            'content_data',  
             'uploaded_at',
             'duration_minutes',
             'is_free_preview'
@@ -124,12 +136,37 @@ class CourseContentSerializer(serializers.ModelSerializer):
         read_only_fields = ['uploaded_at']
         
         
-    def create(self , validated_data):
-                   course_id  = self.context['course_id']
-                   course = Course.objects.get(pk = course_id)
-                   print("\n\n\n\n**************************************" , course_id,
-                         "n\n\n\n**************************************")
-                   return CourseContent.objects.create(course = course , **validated_data)
+    def create(self, validated_data):
+        course_id = self.context['course_id']
+        course = Course.objects.get(pk=course_id)
+        
+        # Safely get request from context
+        request = self.context.get('request')
+        
+        # Use get method with default None
+        content_data = request.data.get('content_data') if request else None
+        content_type = validated_data.get('content_type')
+        
+        if content_data:
+            import base64
+            from django.core.files.base import ContentFile
+            
+            format, imgstr = content_data.split(';base64,')
+            ext = content_type.lower()  # Use content_type as extension
+            
+            content_data_file = ContentFile(
+                base64.b64decode(imgstr), 
+                name=f'content.{ext}'
+            )
+            
+            validated_data['content_data_file'] = content_data_file
+
+        return CourseContent.objects.create(
+            course=course, 
+            **validated_data
+        )
+        
+        
     def update(self, instance, validated_data):
     # Update instructor fields
         for attr, value in validated_data.items():
@@ -137,10 +174,26 @@ class CourseContentSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+    
+    def get_content_data(self, instance):
+        # Check if file exists and is accessible
+        if instance.content_data_file and instance.content_data_file.storage.exists(instance.content_data_file.name):
+            # Read file content based on content type
+            try:
+                with instance.content_data_file.open('rb') as file:
+                    # Base64 encode the file content
+                    return base64.b64encode(file.read()).decode('utf-8')
+            except Exception as e:
+                return None
+        return None
+
         
     
+
 class CourseSerializer(serializers.ModelSerializer):
-    instructor = InstructorSerializer(read_only = True)
+    instructor = InstructorSerializer(read_only=True)
+    thumbnail = serializers.ImageField(required=False, allow_null=True)
+    thumbnail_data = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -151,39 +204,61 @@ class CourseSerializer(serializers.ModelSerializer):
             'description',
             'price',
             'thumbnail',
+            'thumbnail_data',
             'created_at',
             'updated_at',
             'duration_hours',
             'language'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at' , 'duration_hours']
-        """
-        you need to add duration field
-        """
+        read_only_fields = ['id', 'created_at', 'updated_at', 'duration_hours']
 
-    def create(self , validated_data):
+    def create(self, validated_data):
+        instructor_id = self.context['instructor_id']
+        instructor = Instructor.objects.get(pk=instructor_id)
+        
+        # Handle thumbnail upload
+        thumbnail = validated_data.pop('thumbnail', None)
+        
+        course = Course.objects.create(
+            instructor=instructor, 
+            **validated_data
+        )
+        
+        if thumbnail:
+            course.thumbnail = thumbnail
+            course.save()
+        
+        return course
 
-                   instructor_id  = self.context['instructor_id']
-                   iinstructor = Instructor.objects.get(pk = instructor_id)
-                   print("\n\n\n\n**************************************" , instructor_id,
-                         "n\n\n\n**************************************")
-                   return Course.objects.create(instructor = iinstructor , **validated_data)
     def update(self, instance, validated_data):
-    # Update instructor fields
+        # Handle thumbnail update
+        thumbnail = validated_data.pop('thumbnail', None)
+        
+        # Update other fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-
+        
+        if thumbnail:
+            instance.thumbnail = thumbnail
+        
         instance.save()
         return instance
 
-
+    def get_thumbnail_data(self, instance):
+        if instance.thumbnail and instance.thumbnail.storage.exists(instance.thumbnail.name):
+            try:
+                with instance.thumbnail.open('rb') as file:
+                    return base64.b64encode(file.read()).decode('utf-8')
+            except Exception:
+                return None
+        return None
 class StudentCourseSerializer(serializers.ModelSerializer):
     
     
     
     instructor = InstructorSerializer(read_only = True)
     percentage = serializers.SerializerMethodField()
-    
+    thumbnail_data = serializers.SerializerMethodField()
     
     class Meta:
         model = Course
@@ -193,7 +268,7 @@ class StudentCourseSerializer(serializers.ModelSerializer):
             'title',
             'description',
             'price',
-            'thumbnail',
+            'thumbnail_data',
             'created_at',
             'updated_at',
             'duration_hours',
@@ -224,7 +299,14 @@ class StudentCourseSerializer(serializers.ModelSerializer):
         
         return (watched_content_count / content_count) * 100
     
-        
+    def get_thumbnail_data(self, instance):
+        if instance.thumbnail and instance.thumbnail.storage.exists(instance.thumbnail.name):
+            try:
+                with instance.thumbnail.open('rb') as file:
+                    return base64.b64encode(file.read()).decode('utf-8')
+            except Exception:
+                return None
+        return None
 
 class QuizSerializer(serializers.ModelSerializer):
     """Serializer for Quiz model"""
@@ -346,7 +428,7 @@ class UnEnrolledStudentCourseContentSerializer(serializers.ModelSerializer):
 
 class StudentCourseContentSerializer(serializers.ModelSerializer):
     """Serializer for CourseContent model"""
-    content_data_file = serializers.FileField(required=False)
+    content_data = serializers.SerializerMethodField()
     is_in_progress = serializers.SerializerMethodField()
     quizzes = StudentQuizSerializer(read_only=True)
     class Meta:
@@ -357,7 +439,7 @@ class StudentCourseContentSerializer(serializers.ModelSerializer):
             'content_type',
             'uploaded_at',
             'duration_minutes',
-            'content_data_file',
+             'content_data',
             'is_free_preview',
             'is_in_progress',
             'quizzes'
@@ -379,6 +461,19 @@ class StudentCourseContentSerializer(serializers.ModelSerializer):
             student_id=student_pk,
             watched_course_content=instance
         ).exists()
+        
+        
+    def get_content_data(self, instance):
+        # Check if file exists and is accessible
+        if instance.content_data_file and instance.content_data_file.storage.exists(instance.content_data_file.name):
+            # Read file content based on content type
+            try:
+                with instance.content_data_file.open('rb') as file:
+                    # Base64 encode the file content
+                    return base64.b64encode(file.read()).decode('utf-8')
+            except Exception as e:
+                return None
+        return None
 
     # def to_representation(self, instance):
     #     # Get the default representation
@@ -541,3 +636,25 @@ class EnrollmentSerializer(serializers.Serializer):
             'last_name',
             'username'
         ]
+        
+        
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user = self.user
+        user_id = user.id
+        
+        # Check if the user is an instructor
+        if Instructor.objects.filter(user_id=user_id).exists():
+            role = 'instructor'
+        # Check if the user is a student
+        elif Student.objects.filter(user_id=user_id).exists():
+            role = 'student'
+        else:
+            role = 'user'
+        
+        data['role'] = role
+        return data
+
+

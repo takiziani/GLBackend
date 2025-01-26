@@ -32,7 +32,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if os.getenv('DOCKERIZED'):  # Set this variable in your Docker container
     env_file = os.path.join(BASE_DIR, '..', '.env')  # Using Projet_GL/.env
 else:
-    env_file = os.path.join(BASE_DIR, '.env')  # Using BackEnd/.env for local dev
+    # Using BackEnd/.env for local dev
+    env_file = os.path.join(BASE_DIR, '.env')
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -78,7 +79,7 @@ INSTALLED_APPS = [
     'App',
     'drf_spectacular',
     'django_filters',
-    'corsheaders',
+    'corsheaders'
 ]
 
 INTERNAL_IPS = [
@@ -95,15 +96,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",  
-    'corsheaders.middleware.CorsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    'corsheaders.middleware.CorsMiddleware'
 ]
-
 
 
 REST_FRAMEWORK = {
 
-    'COERCE_DECIMAL_TO_STRING' : False,
+    'COERCE_DECIMAL_TO_STRING': False,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication'
@@ -112,7 +112,7 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE' : 'Django DzSkills',
+    'TITLE': 'Django DzSkills',
 }
 
 
@@ -137,9 +137,6 @@ SIMPLE_JWT = {
 
 
 ROOT_URLCONF = 'ProjetGL.urls'
-
-
-
 
 
 TEMPLATES = [
@@ -210,11 +207,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-
-
+#<<<<<<< HEAD
+#=======
 AUTH_USER_MODEL = 'App.User'
 
 
+#>>>>>>> 11dbe0690906667c1f574f7b9c73cde17b77e459
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -253,11 +251,8 @@ ALLOWED_HOSTS = ['*']
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
 
 
 DEFAULT_FROM_EMAIL = 'ostora@gmail.com'
@@ -290,11 +285,14 @@ SUBSCRIPTION = {
     'PRICE': '100',
     'DURATION': '120',
 }
+
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
     # Add other origins as needed
 ]
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     'content-type',
@@ -304,7 +302,5 @@ CORS_ALLOW_HEADERS = [
 ]
 
 AUTH_USER_MODEL = 'App.User'
-
-
 
 
