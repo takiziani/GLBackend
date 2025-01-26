@@ -243,10 +243,7 @@ class CourseSerializer(serializers.ModelSerializer):
                 return None
         return None
 class StudentCourseSerializer(serializers.ModelSerializer):
-    
-    
-    
-    instructor = InstructorSerializer(read_only = True)
+    instructor = InstructorSerializer(read_only=True)
     percentage = serializers.SerializerMethodField()
     thumbnail_data = serializers.SerializerMethodField()
     
@@ -290,12 +287,8 @@ class StudentCourseSerializer(serializers.ModelSerializer):
         return (watched_content_count / content_count) * 100
     
     def get_thumbnail_data(self, instance):
-        if instance.thumbnail and instance.thumbnail.storage.exists(instance.thumbnail.name):
-            try:
-                with instance.thumbnail.open('rb') as file:
-                    return base64.b64encode(file.read()).decode('utf-8')
-            except Exception:
-                return None
+        if instance.thumbnail:
+            return instance.thumbnail.url
         return None
 
 class QuizSerializer(serializers.ModelSerializer):
@@ -387,6 +380,7 @@ class UnEnrolledStudentCourseContentSerializer(serializers.ModelSerializer):
     """Serializer for CourseContent model"""
     content_data_file = serializers.FileField(required=False)
     quizzes = StudentQuizSerializer(read_only=True)
+    
     class Meta:
         model = CourseContent
         fields = [
@@ -399,10 +393,12 @@ class UnEnrolledStudentCourseContentSerializer(serializers.ModelSerializer):
             'is_free_preview',
             'quizzes'
         ]
-        read_only_fields = ['uploaded_at']        
+        read_only_fields = ['uploaded_at']
 
-    
-    
+    def get_content_data(self, instance):
+        if instance.content_data_file:
+            return instance.content_data_file.url
+        return None
 
     def to_representation(self, instance):
         # Get the default representation
@@ -421,6 +417,7 @@ class StudentCourseContentSerializer(serializers.ModelSerializer):
     content_data = serializers.SerializerMethodField()
     is_in_progress = serializers.SerializerMethodField()
     quizzes = StudentQuizSerializer(read_only=True)
+    
     class Meta:
         model = CourseContent
         fields = [
@@ -429,12 +426,12 @@ class StudentCourseContentSerializer(serializers.ModelSerializer):
             'content_type',
             'uploaded_at',
             'duration_minutes',
-             'content_data',
+            'content_data',
             'is_free_preview',
             'is_in_progress',
             'quizzes'
         ]
-        read_only_fields = ['uploaded_at']        
+        read_only_fields = ['uploaded_at']
 
     def get_is_in_progress(self, instance):
         """
@@ -451,31 +448,13 @@ class StudentCourseContentSerializer(serializers.ModelSerializer):
             student_id=student_pk,
             watched_course_content=instance
         ).exists()
-        
-        
+
     def get_content_data(self, instance):
-        # Check if file exists and is accessible
-        if instance.content_data_file and instance.content_data_file.storage.exists(instance.content_data_file.name):
-            # Read file content based on content type
-            try:
-                with instance.content_data_file.open('rb') as file:
-                    # Base64 encode the file content
-                    return base64.b64encode(file.read()).decode('utf-8')
-            except Exception as e:
-                return None
+        if instance.content_data_file:
+            return instance.content_data_file.url
         return None
 
-    # def to_representation(self, instance):
-    #     # Get the default representation
-    #     representation = super().to_representation(instance)
-
-    #     # Remove content_data_file if the content is not free preview
-    #     if not instance.is_free_preview:
-    #         representation.pop('content_data_file', None)
-
-    #     return representation
-
-
+    # ...existing code...
 
 
 class StudentProgressSerializer(serializers.ModelSerializer):

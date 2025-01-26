@@ -311,7 +311,7 @@ AUTH_USER_MODEL = 'App.User'
 
 #cloudinary integrations
 cloudinary.config(
-    cloud_name = "dnfs5u8yy",
-    api_key = "349484523589165",
-    api_secret = "gyOgIO7aEFHWpGK27PdvQxDKBlY"
+    cloud_name = env('cloud_name'),
+    api_key = env('api_key'),
+    api_secret = env('api_secret')
     )
