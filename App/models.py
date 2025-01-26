@@ -50,7 +50,7 @@ class Course(models.Model):
         decimal_places=2, 
         validators=[MinValueValidator(0)]
     )
-    thumbnail = models.ImageField(upload_to='course_thumbnails/', storage=SupabaseStorage(), null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='course_thumbnails/',null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     duration_hours = models.IntegerField(
