@@ -294,6 +294,7 @@ SUBSCRIPTION = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
+    "https://gl-frontend-seven.vercel.app",
     # Add other origins as needed
 ]
 
