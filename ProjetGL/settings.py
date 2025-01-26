@@ -35,6 +35,9 @@ else:
     # Using BackEnd/.env for local dev
     env_file = os.path.join(BASE_DIR, '.env')
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,7 +82,8 @@ INSTALLED_APPS = [
     'App',
     'drf_spectacular',
     'django_filters',
-    'corsheaders'
+    'corsheaders',
+    "cloudinary",
 ]
 
 INTERNAL_IPS = [
@@ -304,3 +308,9 @@ CORS_ALLOW_HEADERS = [
 AUTH_USER_MODEL = 'App.User'
 
 
+#cloudinary integrations
+cloudinary.config(
+    cloud_name = "dnfs5u8yy",
+    api_key = "349484523589165",
+    api_secret = "gyOgIO7aEFHWpGK27PdvQxDKBlY"
+    )

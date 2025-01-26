@@ -5,6 +5,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta
+from cloudinary.models import CloudinaryField
 class User(AbstractUser):
 
     email = models.EmailField(unique=True)
@@ -54,7 +55,7 @@ class Course(models.Model):
         decimal_places=2, 
         validators=[MinValueValidator(0)]
     )
-    thumbnail = models.ImageField(upload_to='course_thumbnails/', null=True, blank=True)
+    thumbnail = CloudinaryField('image', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     duration_hours = models.IntegerField(
@@ -65,6 +66,8 @@ class Course(models.Model):
     
     def __str__(self):
         return self.title
+from cloudinary.models import CloudinaryField
+
 class CourseContent(models.Model):
     """Individual content units within a course"""
     CONTENT_TYPES = (
@@ -84,7 +87,7 @@ class CourseContent(models.Model):
         max_length=20, 
         choices=CONTENT_TYPES
     )
-    content_data_file = models.FileField(upload_to='course_contents/', null=True)
+    content_data_file = CloudinaryField('file', null=True)
     uploaded_at = models.DateTimeField(auto_now=True)
     duration_minutes = models.IntegerField(
         validators=[MinValueValidator(0)]
